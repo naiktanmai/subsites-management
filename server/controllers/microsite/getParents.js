@@ -1,5 +1,5 @@
 const MicroSite = require("../../models/MicroSite");
-const getRoot = require("./getRoot");
+const getRootMicroSite = require("./getRootMicroSite");
 
 const getImmediateParent = (parentLocationCode = []) => {
   return MicroSite.findOne({
@@ -26,5 +26,10 @@ const getAllParents = (acc = [], parentLocationCode = []) => {
 };
 
 module.exports = (parentLocationCode = []) => {
-  return Promise.all([getAllParents([], parentLocationCode), getRoot()]);
+  return getAllParents([], parentLocationCode).then((data = []) => {
+    return getRootMicroSite().then((rootData = {}) => {
+      data.push(rootData);
+      return data;
+    });
+  });
 };
